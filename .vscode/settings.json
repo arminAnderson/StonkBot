@@ -6,7 +6,7 @@
                 {
                     "scope": 
                     [     
-                        
+                        "comment.line.number-sign.python"
                     ],
                     "settings": {
                         "foreground": "#dddddd40",
@@ -63,7 +63,9 @@
                         "keyword.operator.arithmetic.python",
                         "punctuation.separator.period.python",
                         "keyword.operator.logical.python",
-                        "meta.item-access.python"
+                        "meta.item-access.python",
+                        "punctuation.definition.list.begin.python",
+                        "punctuation.definition.list.end.python"
                     ],
                     "settings": {
                         "foreground": "#ce9178"
@@ -96,7 +98,8 @@
                     "scope": 
                     [
                         "source.python",
-                        "meta.indexed-name.python"
+                        "meta.indexed-name.python",
+                        "meta.item-access.arguments.python"
                         
                     ],
                     "settings": {
