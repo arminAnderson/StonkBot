@@ -39,32 +39,32 @@ def GetRobinhoodPage(arg):
     webbrowser.open(url)
     print("Robinhood opened.")
 
-def GetMarketAverage():
-    URL = "https://finance.yahoo.com"
+def GetMarketAverage(avgOnly = False):
+    URL = "https://money.cnn.com/data/markets/"
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, 'html.parser')
-    result = soup.find(class_="Carousel-Slider Pos(r) Whs(nw)")
+    result = soup.find(class_="three-equal-columns wsod")
+    result = result.findAll("li")
     text = []
-    for chart in result:
-        chart.find(class_="Trsdu(0.3s) Fz(s) Mt(4px) Mb(0px) Fw(b) D(ib)")
-        for c in chart:
-            c.findAll("class")
-            for n in c:
-                if(n.text != ""):
-                    text.append(n.text)
-            text.append(text[2][0 :text[2].find("(")])
-            text[2] = text[2][text[2].find("(") + 1:len(text[2]) - 1]
-            #if text[3][0] == '+':
-            #    text[3] = text[3][1:len(text[3])]
-            if float(text[3]) >= 0:
-                print(Back.GREEN + text[0], end="")
-            else:
-                print(Back.RED + text[0], end="")
-            print(Back.RESET,end="")
-            print(": Value: {}, Change: {}, Percent: {}".format(text[0], text[1], text[3], text[2]))
-            text.clear()
+    avgPercent = 0
+    for data in result:
+        alteredText = data.text
+        alteredText = alteredText.replace('\t', "")
+        alteredText = alteredText.replace('\n', "")
+        alteredText = alteredText.replace('\xa0', "")
+        text.append(alteredText[0:alteredText.find("-")])
+        text.append(alteredText[alteredText.find("-"):alteredText.find("%")+1])
+        text.append(alteredText[alteredText.find("%")+1:alteredText.find('/')])
+        text.append(alteredText[alteredText.find("/")+1:len(alteredText)])
+        if not avgOnly:
+            c = Back.GREEN
+            if float(text[3]) < 0:
+                c = Back.RED
+            print("{}\t: {}\t -> ".format(text[0],text[2]) + c + "{} | {}".format(text[1], text[3]) + Back.RESET)
+        avgPercent += float(text[1][0:len(text[1])-1])
+        text.clear()
         
-    return "NULL"
+    return avgPercent/3
 
 init() #colorama initialization
 
@@ -76,9 +76,15 @@ commands.add("clear")
 
 print("--------------------------------")
 print("S T O N K B O T initializing...")
-print("Welcome. General market at " + GetMarketAverage())
 print("--------------------------------")
-#GetPerformance("MFA")
+marketAvg = GetMarketAverage(True)
+color = Back.GREEN
+if marketAvg < 0:
+    color = Back.RED
+print("Welcome. General market at " + color + "{0:g}".format(marketAvg) + '%' + Back.RESET)
+print("--------------------------------")
+GetMarketAverage()
+print("--------------------------------")
 
 while(True):
     print("Command: ", end ="")
